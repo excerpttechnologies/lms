@@ -5,7 +5,7 @@ import { generateTokenPair, verifyRefreshToken } from '@/lib/auth/jwt';
 import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { refreshTokenSchema } from '@/lib/validators/auth.validator';
-import { Types } from 'mongoose';
+
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     // Generate new token pair
     const tokens = generateTokenPair({
-      userId: (user._id as Types.ObjectId).toString(),
+      userId: (user._id as any).toString(),
       email: user.email,
       role: user.role,
     });

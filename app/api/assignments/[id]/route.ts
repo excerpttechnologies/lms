@@ -156,34 +156,46 @@ export const DELETE = requireTeacher(async (
 
     // const assignmentId = params.id;
      const { id: assignmentId } = await params;
+     console.log("[DELETE] assignmentId:", assignmentId, "user:", currentUser?.userId, "role:", currentUser?.role);
 
     if (!Types.ObjectId.isValid(assignmentId)) {
+      console.warn("[DELETE] invalid ObjectId:", assignmentId);
       return ApiResponseBuilder.badRequest('Invalid assignment ID');
     }
 
     const assignment = await Assignment.findById(assignmentId).populate('courseId');
     if (!assignment) {
+       console.warn("[DELETE] missing assignmentId");
       return ApiResponseBuilder.notFound('Assignment not found');
     }
 
     // Check ownership
     const course = assignment.courseId as any;
+     if (!course) {
+        console.warn("[DELETE] assignment has no course:", assignmentId);
+        return ApiResponseBuilder.badRequest("Assignment has no course associated");
+      }
     if (
       currentUser.role !== 'ADMIN' &&
-      course.teacherId.toString() !== currentUser.userId
+      String(course.teacherId) !== String(currentUser.userId)
     ) {
+      console.warn("[DELETE] access denied. course.teacherId:", String(course.teacherId), "currentUser:", currentUser.userId);
       return ApiResponseBuilder.forbidden('Access denied');
     }
 
     // Check if there are submissions
     const submissionCount = await Submission.countDocuments({ assignmentId });
+    console.log("[DELETE] submissionCount:", submissionCount, "for assignment:", assignmentId);
+
     if (submissionCount > 0) {
+      console.warn("[DELETE] cannot delete - submissions exist:", submissionCount);
       return ApiResponseBuilder.badRequest(
         'Cannot delete assignment with existing submissions'
       );
     }
 
     await Assignment.findByIdAndDelete(assignmentId);
+    console.log("[DELETE] assignment deleted:", assignmentId);
 
     return ApiResponseBuilder.success(null, 'Assignment deleted successfully');
   } catch (error) {

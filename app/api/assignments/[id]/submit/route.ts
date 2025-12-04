@@ -132,7 +132,7 @@ export const POST = requireAuth(async (
 
     return ApiResponseBuilder.created(
       {
-        _id: (submission._id as Types.ObjectId).toString(),
+        _id: (submission._id as any).toString(),
         assignmentId: submission.assignmentId.toString(),
         studentId: submission.studentId.toString(),
         status: submission.status,

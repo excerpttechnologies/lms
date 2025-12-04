@@ -1,10 +1,7 @@
-// ============================================
 // src/app/api/attendance/mark/route.ts
-// POST /api/attendance/mark - Quick mark single attendance
-// ============================================
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
-import Attendance, { AttendanceStatus } from '@/models/Attendance';
+import Attendance from '@/models/Attendance';
 import Course from '@/models/Course';
 import User from '@/models/User';
 import Enrollment from '@/models/Enrollment';
@@ -12,13 +9,13 @@ import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { requireTeacher } from '@/middleware/auth';
 import { z } from 'zod';
-import { Types } from 'mongoose';
+import { Types } from 'mongoose'; // <-- ADDED
 
 const markAttendanceSchema = z.object({
   courseId: z.string().min(1),
   studentId: z.string().min(1),
   date: z.string(),
-  status: z.nativeEnum(AttendanceStatus),  // ← Fixed: Use z.nativeEnum instead of z.enum
+  status: z.enum(['PRESENT', 'ABSENT', 'LATE', 'EXCUSED']),
   notes: z.string().optional(),
 });
 
@@ -67,14 +64,14 @@ export const POST = requireTeacher(async (request: NextRequest, currentUser: any
 
     if (existing) {
       // Update existing
-      existing.status = validated.status;
+      existing.status = validated.status as any;           // <-- CAST
       existing.notes = validated.notes;
       existing.markedBy = new Types.ObjectId(currentUser.userId);
       await existing.save();
 
       return ApiResponseBuilder.success(
         {
-          _id: (existing._id as Types.ObjectId).toString(),
+          _id: (existing._id as any).toString(),
           status: existing.status,
           date: existing.date,
         },
@@ -87,14 +84,14 @@ export const POST = requireTeacher(async (request: NextRequest, currentUser: any
       courseId: validated.courseId,
       studentId: validated.studentId,
       date: new Date(validated.date),
-      status: validated.status,
+      status: validated.status as any,                    // <-- CAST
       notes: validated.notes,
-      markedBy: currentUser.userId,
+      markedBy: new Types.ObjectId(currentUser.userId),  // ensure ObjectId
     });
 
     return ApiResponseBuilder.created(
       {
-        _id: (record._id as Types.ObjectId).toString(),
+        _id: (record._id as any).toString(),
         courseId: record.courseId.toString(),
         studentId: record.studentId.toString(),
         status: record.status,

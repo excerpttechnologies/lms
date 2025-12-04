@@ -108,7 +108,6 @@ export const PUT = requireTeacher(async (
     const validated = updateAttendanceSchema.parse(body);
 
     // Update record
-    // validated.status is a zod string union; cast to the model's status type to satisfy TypeScript
     record.status = validated.status as any;
     if (validated.notes !== undefined) {
       record.notes = validated.notes;
@@ -126,7 +125,7 @@ export const PUT = requireTeacher(async (
     return ApiResponseBuilder.success(
       {
         ...record.toObject(),
-        _id: (record._id as Types.ObjectId).toString(),
+        _id: (record._id as any).toString(),
         studentId: {
           ...(record.studentId as any).toObject(),
           _id: (record.studentId as any)._id.toString(),

@@ -1,8 +1,7 @@
-// ============================================
 // src/app/api/courses/[id]/modules/[moduleIndex]/route.ts
 // PUT /api/courses/:id/modules/:moduleIndex - Update module
 // DELETE /api/courses/:id/modules/:moduleIndex - Delete module
-// ============================================
+
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import Course from '@/models/Course';
@@ -21,21 +20,19 @@ const updateModuleSchema = z.object({
 export const PUT = requireTeacher(async (
   request: NextRequest,
   currentUser: any,
-  { params }: { params: Promise<{ id: string; moduleIndex: string }> }  // ← Fixed: Added Promise
+  context: { params: Promise<{ id: string; moduleIndex: string }> } // keep as Promise if your Next types expect it
 ) => {
   try {
     await connectDB();
 
-    const { id: courseId, moduleIndex: moduleIndexStr } = await params;
-    const moduleIndex = parseInt(moduleIndexStr);  // ← Fixed: Convert to number
-
-    // Validate moduleIndex is a valid number
-    if (isNaN(moduleIndex) || moduleIndex < 0) {
-      return ApiResponseBuilder.badRequest('Invalid module index');
-    }
+    const { id: courseId, moduleIndex } = await context.params;
+    const moduleIdx = parseInt(moduleIndex, 10);
 
     if (!Types.ObjectId.isValid(courseId)) {
       return ApiResponseBuilder.badRequest('Invalid course ID');
+    }
+    if (Number.isNaN(moduleIdx) || moduleIdx < 0) {
+      return ApiResponseBuilder.badRequest('Invalid module index');
     }
 
     const course = await Course.findById(courseId);
@@ -50,7 +47,7 @@ export const PUT = requireTeacher(async (
       return ApiResponseBuilder.forbidden('Access denied');
     }
 
-    if (!course.modules[moduleIndex]) {
+    if (!Array.isArray(course.modules) || moduleIdx >= course.modules.length) {
       return ApiResponseBuilder.notFound('Module not found');
     }
 
@@ -58,18 +55,21 @@ export const PUT = requireTeacher(async (
     const validated = updateModuleSchema.parse(body);
 
     // Update module
-    if (validated.title) course.modules[moduleIndex].title = validated.title;
-    if (validated.description !== undefined)
-      course.modules[moduleIndex].description = validated.description;
-    if (validated.order !== undefined)
-      course.modules[moduleIndex].order = validated.order;
+    const moduleDoc = course.modules[moduleIdx];
+    if (validated.title !== undefined) moduleDoc.title = validated.title;
+    if (validated.description !== undefined) moduleDoc.description = validated.description;
+    if (validated.order !== undefined) moduleDoc.order = validated.order;
 
     await course.save();
 
+    // Return updated module (serialize subdoc properly)
+    const updatedModule = (moduleDoc as any).toObject ? (moduleDoc as any).toObject() : moduleDoc;
+    if ((updatedModule as any)._id) (updatedModule as any)._id = (moduleDoc as any)._id.toString();
+
     return ApiResponseBuilder.success(
       {
-        _id: (course._id as Types.ObjectId).toString(),
-        modules: course.modules,
+        _id: (course._id as any).toString(),
+        module: updatedModule,
       },
       'Module updated successfully'
     );
@@ -81,21 +81,19 @@ export const PUT = requireTeacher(async (
 export const DELETE = requireTeacher(async (
   request: NextRequest,
   currentUser: any,
-  { params }: { params: Promise<{ id: string; moduleIndex: string }> }  // ← Fixed: Added Promise
+  context: { params: Promise<{ id: string; moduleIndex: string }> }
 ) => {
   try {
     await connectDB();
 
-    const { id: courseId, moduleIndex: moduleIndexStr } = await params;
-    const moduleIndex = parseInt(moduleIndexStr);  // ← Fixed: Convert to number
-
-    // Validate moduleIndex is a valid number
-    if (isNaN(moduleIndex) || moduleIndex < 0) {
-      return ApiResponseBuilder.badRequest('Invalid module index');
-    }
+    const { id: courseId, moduleIndex } = await context.params;
+    const moduleIdx = parseInt(moduleIndex, 10);
 
     if (!Types.ObjectId.isValid(courseId)) {
       return ApiResponseBuilder.badRequest('Invalid course ID');
+    }
+    if (Number.isNaN(moduleIdx) || moduleIdx < 0) {
+      return ApiResponseBuilder.badRequest('Invalid module index');
     }
 
     const course = await Course.findById(courseId);
@@ -110,12 +108,12 @@ export const DELETE = requireTeacher(async (
       return ApiResponseBuilder.forbidden('Access denied');
     }
 
-    if (!course.modules[moduleIndex]) {
+    if (!Array.isArray(course.modules) || moduleIdx >= course.modules.length) {
       return ApiResponseBuilder.notFound('Module not found');
     }
 
     // Remove module
-    course.modules.splice(moduleIndex, 1);
+    course.modules.splice(moduleIdx, 1);
     await course.save();
 
     return ApiResponseBuilder.success(null, 'Module deleted successfully');

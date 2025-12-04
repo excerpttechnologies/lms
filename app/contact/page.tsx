@@ -1,129 +1,153 @@
 // src/app/contact/page.tsx
 'use client'
-
+import Breadcrumb from "../../components/layout/Breadcrumb";
+import Navbar from "@/components/layout/Navbar";
 
 export default function ContactPage() {
   return (
     <>
-       <div className="dhabr i3xre sm:py-16 lg:py-24">
-    <div className="wpaot owca9 j2be9 sm:px-6 lg:px-8">
-      <div
-        className="m4hp4 jfin8 absolute erng7 top-0 y4ea6 overflow-hidden epqyg lg:h-72"
-      >
-        <img
-          src="https://cdn.flyonui.com/fy-assets/blocks/marketing-ui/contact/contact-4.png"
-          alt="Office interior with modern workspace"
-          className="n85ea w-full c7ys3"
-        />
-      </div>
+    <Navbar/>
+     <div className="flex jz3o6 items-center gap-4 mt-3">
+                <h1 className="text-2xl font-bold ">Contact US</h1>
+              <Breadcrumb
+                items={[
+                  { label: "Home", href: "/" },
+                  { label: "Contact Us" }
+                ]}
+              />
+        
+              
+            </div>
 
-     
-      <div className="relative dpzny k6gdi sm:gap-16 lg:grid-cols-2 lg:gap-24">
-  
-        <div className="tlnfm max-lg:mt-10">
-          <div className="hqh7v">
-            <h2 className="waiii t3mfo n7g25 md:text-3xl lg:text-4xl">Reach Out to Us</h2>
-            <p className="bk5oo u7qxt">
-              Need support, have a query, or looking for collaboration? Let’s talk!
-            </p>
-          </div>
-          <div className="erk8w">
-            <div className="vi1oq">
-              <h2 className="text-base-content waiii t3mfo">Contact Information</h2>
-              <p className="text-base-content/80">
-                Explore new destinations, indulge in local cuisines, and immerse yourself in diverse cultures.
-              </p>
+       <div className=" i3xre sm:py-16 lg:py-24">
+    <div className="wpaot owca9 j2be9 sm:px-6 lg:px-8">
+      <div className="fr5x1 rdi5h sm:mb-16 lg:mb-24">
+        <h2 className="text-base-content w3dp6 waiii t3mfo md:text-3xl lg:text-4xl">Stay Connected with Us</h2>
+        <p className="text-base-content/80 bk5oo">
+          Reach out for inquiries, support, or collaboration—we’d love to hear from you!
+        </p>
+      </div>
+    
+      <div className="zq390 lynk2 nwdq3">
+        <div className="nqxya dpzny k6gdi md:grid-cols-2">
+        
+          <form className="o63tj" >
+            <div>
+              <label className="wqwbi" >Name</label>
+              <input type="text" id="name" className="ljn0d fo8mv w-full" placeholder="Enter your name here..." />
             </div>
-            <div className="hqh7v">
-         
-              <div className="flex items-center sly4q">
-                <span className="icon-[tabler--phone] text-base-content size-5" aria-hidden="true"></span>
-                <span className="text-base-content font-medium">+1-316-555-1258</span>
-              </div>
+            <div>
+              <label className="wqwbi" >Email</label>
+              <input type="email" id="email" className="ljn0d fo8mv w-full" placeholder="Enter your Email here..." />
+            </div>
+            <div>
+              <label className="wqwbi" >Phone Number</label>
+              <input
+                type="number"
+                id="phone"
+                className="ljn0d fo8mv w-full"
+                placeholder="Enter your Phone number here..."
+              />
+            </div>
+            <div>
+              <label className="wqwbi" >Message</label>
+              <textarea id="message" className="ystrl mekyd w-full" placeholder="Type here"></textarea>
+            </div>
            
-              <div className="flex items-center sly4q">
-                <span className="icon-[tabler--mail] text-base-content size-5" aria-hidden="true"></span>
-                <a href="mailto:hadams@hotmail.com" className="text-base-content font-medium">
-                  hadams@hotmail.com
-                </a>
+            <div>
+              <p className="text-base-content w3dp6 font-medium">Services</p>
+              <div className="dpzny vu1rt ikjxw sm:grid-cols-2">
+                <div className="flex items-center rsqkx">
+                  <input type="checkbox" className="d5jfq" id="websitedesign" />
+                  <label className="wqwbi text-base" >Website Design</label>
+                </div>
+                <div className="flex items-center rsqkx">
+                  <input type="checkbox" className="d5jfq" id="contentcreation" />
+                  <label className="wqwbi text-base" >Content Creation</label>
+                </div>
+                <div className="flex items-center rsqkx">
+                  <input type="checkbox" className="d5jfq" id="ux-design" />
+                  <label className="wqwbi text-base" >UX Design</label>
+                </div>
+                <div className="flex items-center rsqkx">
+                  <input type="checkbox" className="d5jfq" id="strategy-consulting" />
+                  <label className="wqwbi text-base" >Strategy & Consulting</label>
+                </div>
               </div>
+            </div>
+            <button type="submit" className="btn y1dss btn-primary w-full">
+              Send Message
+              <span className="icon-[tabler--send] size-5"></span>
+            </button>
+          </form>
+        
+          <div>
             
-              <div className="flex qojvm sly4q">
-                <span className="icon-[tabler--map-pin] text-base-content size-5" aria-hidden="true"></span>
-                <address className="text-base-content font-medium f9bat">
-                  802 Pension Rd, Maine 96812, USA
-                </address>
-              </div>
-            </div>
+            <a href="https://www.betriebshaftpflicht.at/cyber-versicherung/">Cyber-Versicherung</a>
            
-            <div className="flex njdg2" aria-label="Social media links">
-              <a href="#">
-                <div className="nfjpm rmjll">
-                  <div className="dxw29 rgf08 ao3uo rounded-full">
-                    <span className="icon-[tabler--brand-github] size-5"></span>
-                  </div>
-                </div>
-              </a>
-              <a href="#">
-                <div className="nfjpm rmjll">
-                  <div className="xrxte k8xvt ao3uo rounded-full">
-                    <span className="icon-[tabler--brand-discord] size-5"></span>
-                  </div>
-                </div>
-              </a>
-              <a href="#">
-                <div className="nfjpm rmjll">
-                  <div className="e55a4 od3h2 ao3uo rounded-full">
-                    <span className="icon-[tabler--brand-twitter] size-5"></span>
-                  </div>
-                </div>
-              </a>
-              <a href="#">
-                <div className="nfjpm rmjll">
-                  <div className="kn3q0 milpc ao3uo rounded-full">
-                    <span className="icon-[tabler--brand-youtube] size-5"></span>
-                  </div>
-                </div>
-              </a>
-            </div>
           </div>
         </div>
-
+      </div>
      
-        <div className="zq390 ycfhr">
-          <div className="nqxya">
-            <form className="o63tj" >
-              <div className="flex w-full mnhlk ip6vv">
-                <div className="qzwp2 sxihv">
-                  <label className="wqwbi">Your Name</label>
-                  <input type="text" className="ljn0d fo8mv" placeholder="Enter your name" id="name" required />
-                </div>
-                <div className="qzwp2 sxihv">
-                  <label className="wqwbi">Your Email</label>
-                  <input type="email" className="ljn0d fo8mv" placeholder="Enter your email" id="email" required />
-                </div>
+      <div className="gdsae dpzny w-full ip6vv md:grid-cols-2 xl:grid-cols-4">
+       
+        <div className="zq390 bg-primary siqxi nwdq3">
+          <div className="nqxya justify-center ip6vv">
+            <div className="nfjpm rmjll">
+              <div className="text-primary rounded-box ju8ky qr9u1">
+                <span className="icon-[tabler--message-circle-2] lpbrp"></span>
               </div>
-
-              <div>
-                <label className="wqwbi">Subject</label>
-                <input type="text" className="ljn0d fo8mv" placeholder="Enter subject" id="subject" required />
+            </div>
+            <div className="vi1oq">
+              <h3 className="iqv7o c9rvi n7g25">Chat to Sales</h3>
+              <p className="u7qxt">Speak to our friendly team</p>
+            </div>
+            <a href="#" className="btn text-base-content [--btn-color:var(--color-base-200)]">sales@gmail.com</a>
+          </div>
+        </div>
+       
+        <div className="zq390 lynk2 nwdq3">
+          <div className="nqxya justify-center ip6vv">
+            <div className="nfjpm rmjll">
+              <div className="uyq3n text-primary rounded-box ju8ky">
+                <span className="icon-[tabler--messages] lpbrp"></span>
               </div>
-
-              <div>
-                <label className="wqwbi">Message</label>
-                <textarea
-                  className="ystrl mekyd"
-                  placeholder="Type your message here..."
-                  id="message"
-                  required
-                ></textarea>
+            </div>
+            <div className="vi1oq">
+              <h3 className="iqv7o c9rvi">Chat to Support</h3>
+              <p className="text-base-content/80">We're here to help you</p>
+            </div>
+            <a href="#" className="btn g2v48">johndoe@gmail.com</a>
+          </div>
+        </div>
+      
+        <div className="zq390 lynk2 nwdq3">
+          <div className="nqxya justify-center ip6vv">
+            <div className="nfjpm rmjll">
+              <div className="uyq3n text-primary rounded-box ju8ky">
+                <span className="icon-[tabler--map-pin] lpbrp"></span>
               </div>
-
-              <button type="submit" className="btn btn-primary y1dss w-full">
-                Send Message
-                <span className="icon-[tabler--send] size-5" aria-hidden="true"></span>
-              </button>
-            </form>
+            </div>
+            <div className="vi1oq">
+              <h3 className="iqv7o c9rvi">Visit Us</h3>
+              <p className="text-base-content/80">Visit our office</p>
+            </div>
+            <a href="#" className="btn g2v48">View on maps</a>
+          </div>
+        </div>
+        
+        <div className="zq390 lynk2 nwdq3">
+          <div className="nqxya justify-center ip6vv">
+            <div className="nfjpm rmjll">
+              <div className="uyq3n text-primary rounded-box ju8ky">
+                <span className="icon-[tabler--phone-call] lpbrp"></span>
+              </div>
+            </div>
+            <div className="vi1oq">
+              <h3 className="iqv7o c9rvi">Call Us</h3>
+              <p className="text-base-content/80">Mon to Fri from 8am to 5pm</p>
+            </div>
+            <a href="#" className="btn g2v48">+124-2589-7854</a>
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ import Enrollment from '@/models/Enrollment';
 import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { requireTeacher } from '@/middleware/auth';
-import { Types } from 'mongoose';
+
 export const GET = requireTeacher(async (request: NextRequest, currentUser: any) => {
   try {
     await connectDB();
@@ -113,7 +113,7 @@ export const GET = requireTeacher(async (request: NextRequest, currentUser: any)
 
     return ApiResponseBuilder.success({
       course: {
-        _id: (course._id as Types.ObjectId).toString(),
+        _id: (course._id as any).toString(),
         title: course.title,
       },
       period: {

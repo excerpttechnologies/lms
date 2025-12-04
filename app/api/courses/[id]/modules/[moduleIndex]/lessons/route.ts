@@ -1,7 +1,3 @@
-// ============================================
-// src/app/api/courses/[id]/modules/[moduleIndex]/lessons/route.ts
-// POST - Add lesson to module
-// ============================================
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import Course from '@/models/Course';
@@ -30,21 +26,20 @@ const addLessonSchema = z.object({
 export const POST = requireTeacher(async (
   request: NextRequest,
   currentUser: any,
-  { params }: { params: Promise<{ id: string; moduleIndex: string }> }  // ← Fixed: Added Promise
+  context: { params: Promise<{ id: string; moduleIndex: string }> } // <- keep as Promise if your project expects it
 ) => {
   try {
     await connectDB();
-    
-    const { id: courseId, moduleIndex: moduleIndexStr } = await params;
-    const moduleIndex = parseInt(moduleIndexStr);  // ← Fixed: Convert to number
-    
-    // Validate moduleIndex is a valid number
-    if (isNaN(moduleIndex) || moduleIndex < 0) {
-      return ApiResponseBuilder.badRequest('Invalid module index');
-    }
-    
+
+    const { id: courseId, moduleIndex } = await context.params; // await the promise
+    const moduleIdx = parseInt(moduleIndex, 10);
+
     if (!Types.ObjectId.isValid(courseId)) {
       return ApiResponseBuilder.badRequest('Invalid course ID');
+    }
+
+    if (Number.isNaN(moduleIdx) || moduleIdx < 0) {
+      return ApiResponseBuilder.badRequest('Invalid module index');
     }
 
     const course = await Course.findById(courseId);
@@ -59,7 +54,8 @@ export const POST = requireTeacher(async (
       return ApiResponseBuilder.forbidden('Access denied');
     }
 
-    if (!course.modules[moduleIndex]) {
+    // ensure modules exists and index in range
+    if (!Array.isArray(course.modules) || moduleIdx >= course.modules.length) {
       return ApiResponseBuilder.notFound('Module not found');
     }
 
@@ -67,7 +63,7 @@ export const POST = requireTeacher(async (
     const validated = addLessonSchema.parse(body);
 
     // Add lesson
-    course.modules[moduleIndex].lessons.push({
+    course.modules[moduleIdx].lessons.push({
       title: validated.title,
       description: validated.description,
       content: validated.content,
@@ -81,8 +77,8 @@ export const POST = requireTeacher(async (
 
     return ApiResponseBuilder.created(
       {
-        _id: (course._id as Types.ObjectId).toString(),
-        module: course.modules[moduleIndex],
+        _id: (course._id as any).toString(),
+        module: course.modules[moduleIdx],
       },
       'Lesson added successfully'
     );

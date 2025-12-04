@@ -12,7 +12,7 @@ import { handleApiError } from '@/lib/utils/error-handler';
 import { requireAdmin } from '@/middleware/auth';
 import { getPagination, extractPaginationParams } from '@/lib/utils/pagination';
 import { registerSchema } from '@/lib/validators/auth.validator';
-import { Types } from 'mongoose';
+
 // GET /api/users - List all users with pagination, search, and filters
 export const GET = requireAdmin(async (request: NextRequest) => {
   try {
@@ -62,7 +62,7 @@ export const GET = requireAdmin(async (request: NextRequest) => {
     // Convert _id to string for each user
     const formattedUsers = users.map(user => ({
       ...user,
-      _id: (user._id as Types.ObjectId).toString(),
+      _id: user._id.toString(),
     }));
 
     return ApiResponseBuilder.paginated(
@@ -107,7 +107,7 @@ export const POST = requireAdmin(async (request: NextRequest) => {
 
     return ApiResponseBuilder.created(
       {
-        _id: (user._id as Types.ObjectId).toString(),
+        _id: (user._id as any).toString(),
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,

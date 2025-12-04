@@ -19,13 +19,13 @@ export async function GET(request: NextRequest) {
     if (!user) {
       return ApiResponseBuilder.notFound('User not found');
     }
-
+    const fullName = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
     return ApiResponseBuilder.success({
       _id: user._id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      fullName: `${user.firstName ?? ''}${user.lastName ? ' ' + user.lastName : ''}`,
+      fullName,
       role: user.role,
       status: user.status,
       avatar: user.avatar,

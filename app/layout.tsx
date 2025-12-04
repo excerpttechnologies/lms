@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/layout/Navbar";
+
 import Footer from "../components/layout/Footer";
 
 const geistSans = Geist({
@@ -27,19 +27,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-  <link href="https://flyonui.becdn.net/pro/css/flyonui.css" rel="stylesheet" />
-  <script src="https://flyonui.becdn.net/pro/libs/flyonui/flyonui.js"></script>
-   <script src="https://flyonui.becdn.net/pro/libs/apexcharts/dist/apexcharts.min.js"></script>
-  <script src="https://flyonui.becdn.net/pro/libs/lodash/lodash.min.js"></script>
-  <script src="https://flyonui.becdn.net/pro/libs/flyonui/dist/helper-apexcharts.js"></script>
-</head>
+        <link
+          href="https://flyonui.becdn.net/pro/css/flyonui.css"
+          rel="stylesheet"
+        />
+        <script src="https://flyonui.becdn.net/pro/libs/flyonui/flyonui.js"></script>
+        <script src="https://flyonui.becdn.net/pro/libs/apexcharts/dist/apexcharts.min.js"></script>
+        <script src="https://flyonui.becdn.net/pro/libs/lodash/lodash.min.js"></script>
+        <script src="https://flyonui.becdn.net/pro/libs/flyonui/dist/helper-apexcharts.js"></script>
+      </head>
 
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
         {children}
-        {/* <Footer/> */}
+        <Footer />
       </body>
     </html>
   );

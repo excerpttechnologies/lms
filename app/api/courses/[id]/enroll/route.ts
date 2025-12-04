@@ -69,7 +69,7 @@ export const POST = requireAuth(async (
 
     return ApiResponseBuilder.created(
       {
-        _id: (enrollment._id as Types.ObjectId).toString(),
+        _id: (enrollment._id as any).toString(),
         courseId: enrollment.courseId.toString(),
         studentId: enrollment.studentId.toString(),
         status: enrollment.status,
@@ -109,7 +109,7 @@ export const DELETE = requireAuth(async (
     }
 
     // Delete enrollment
-    await Enrollment.findByIdAndDelete((enrollment._id as Types.ObjectId));
+    await Enrollment.findByIdAndDelete(enrollment._id);
 
     // Update course enrollment count
     await Course.findByIdAndUpdate(courseId, {

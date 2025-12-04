@@ -4,7 +4,7 @@
 // ============================================
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
-import Course,{ CourseStatus} from '@/models/Course';
+import Course from '@/models/Course';
 import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { requireTeacher } from '@/middleware/auth';
@@ -45,12 +45,12 @@ export const PUT = requireTeacher(async (
     }
 
     // Update status
-    course.status = CourseStatus.PUBLISHED;
+    course.status = 'PUBLISHED' as any;
     await course.save();
 
     return ApiResponseBuilder.success(
       {
-        _id: (course._id as Types.ObjectId).toString(),
+        _id: (course._id as any).toString(),
         status: course.status,
       },
       'Course published successfully'

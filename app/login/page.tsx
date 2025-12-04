@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Navbar from "@/components/layout/Navbar";
 
 type LoginForm = {
   email: string;
@@ -115,6 +116,9 @@ export default function LoginPage() {
   }
 
   return (
+    <>
+    <Navbar/>
+    
     <div
       className="flex h-auto min-h-screen items-center justify-center overflow-x-hidden bg-[url('https://cdn.flyonui.com/fy-assets/blocks/marketing-ui/auth/auth-background-2.png')] bg-cover bg-center bg-no-repeat py-10"
     >
@@ -209,5 +213,7 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+
+    </>
   );
 }

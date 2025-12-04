@@ -59,6 +59,7 @@ export default function Testimonial() {
   const [progress, setProgress] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
 
+
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((p) => (p >= 100 ? 0 : p + 1));

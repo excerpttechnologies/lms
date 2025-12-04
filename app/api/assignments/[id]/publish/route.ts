@@ -1,21 +1,19 @@
-// ============================================
 // src/app/api/assignments/[id]/publish/route.ts
-// PUT /api/assignments/:id/publish - Publish assignment
-// ============================================
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
-import Assignment, { AssignmentStatus } from '@/models/Assignment';
+import Assignment from '@/models/Assignment';
 import Course from '@/models/Course';
 import User from '@/models/User';
 import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { requireTeacher } from '@/middleware/auth';
 import { Types } from 'mongoose';
+import { AssignmentStatus } from '@/models/Assignment'; // <-- make sure this is exported
 
 export const PUT = requireTeacher(async (
   request: NextRequest,
   currentUser: any,
-  { params }: { params: Promise<{ id: string }> }  // ← Fixed: Added Promise
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     await connectDB();
@@ -41,18 +39,19 @@ export const PUT = requireTeacher(async (
     }
 
     // Validate assignment has questions
-    if (assignment.questions.length === 0) {
+    if (!assignment.questions || assignment.questions.length === 0) {
       return ApiResponseBuilder.badRequest(
         'Cannot publish assignment without questions'
       );
     }
 
-    assignment.status = AssignmentStatus.PUBLISHED;  // ← Fixed: Use enum
+    // Use enum value so TS is happy
+    assignment.status = AssignmentStatus.PUBLISHED;
     await assignment.save();
 
     return ApiResponseBuilder.success(
       {
-        _id: (assignment._id as Types.ObjectId).toString(),
+        _id: (assignment!._id as any).toString(),
         status: assignment.status,
       },
       'Assignment published successfully'

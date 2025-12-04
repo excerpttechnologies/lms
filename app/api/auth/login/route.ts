@@ -6,7 +6,7 @@ import { generateTokenPair } from '@/lib/auth/jwt';
 import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { loginSchema } from '@/lib/validators/auth.validator';
-import { Types } from 'mongoose';
+
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     // Generate tokens
     const tokens = generateTokenPair({
-      userId: (user._id as Types.ObjectId).toString(),
+      userId: (user._id as any).toString(),
       email: user.email,
       role: user.role,
     });
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const response = ApiResponseBuilder.success(
       {
         user: {
-          _id: (user._id as Types.ObjectId),
+          _id: user._id,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,

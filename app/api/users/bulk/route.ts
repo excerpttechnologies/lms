@@ -10,7 +10,7 @@ import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { requireAdmin } from '@/middleware/auth';
 import { z } from 'zod';
-import { Types } from 'mongoose';
+
 const bulkUserSchema = z.object({
   users: z.array(
     z.object({
@@ -58,7 +58,7 @@ export const POST = requireAdmin(async (request: NextRequest) => {
       {
         count: createdUsers.length,
         users: createdUsers.map(u => ({
-          _id: (u._id as Types.ObjectId).toString(),
+          _id: (u._id as any).toString(),
           email: u.email,
           firstName: u.firstName,
           lastName: u.lastName,

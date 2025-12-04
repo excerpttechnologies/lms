@@ -13,7 +13,7 @@ import { handleApiError } from '@/lib/utils/error-handler';
 import { requireAuth, requireTeacher } from '@/middleware/auth';
 import { getPagination, extractPaginationParams } from '@/lib/utils/pagination';
 import { z } from 'zod';
-import { Types } from 'mongoose';
+
 const createAssignmentSchema = z.object({
   courseId: z.string().min(1, 'Course ID is required'),
   title: z.string().min(1, 'Title is required'),
@@ -144,7 +144,7 @@ export const POST = requireTeacher(async (request: NextRequest, currentUser: any
     return ApiResponseBuilder.created(
       {
         ...assignment.toObject(),
-        _id: (assignment._id as Types.ObjectId).toString(),
+        _id: (assignment!._id as any).toString(),
         courseId: {
           ...(assignment.courseId as any).toObject(),
           _id: (assignment.courseId as any)._id.toString(),

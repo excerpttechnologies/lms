@@ -12,7 +12,6 @@ import { requireAuth, requireTeacher } from '@/middleware/auth';
 import { getPagination, extractPaginationParams } from '@/lib/utils/pagination';
 import { createCourseSchema } from '@/lib/validators/course.validator';
 import User from '@/models/User';
-import { Types } from 'mongoose';
 // GET /api/courses - List all courses (Public/Authenticated)
 export const GET = async (request: NextRequest) => {
   try {
@@ -76,7 +75,7 @@ export const GET = async (request: NextRequest) => {
     // Format response
     const formattedCourses = courses.map(course => ({
       ...course,
-      _id: (course._id as Types.ObjectId).toString(),
+      _id: course._id.toString(),
       teacherId: course.teacherId ? {
         ...course.teacherId,
         _id: (course.teacherId as any)._id.toString(),
@@ -104,6 +103,11 @@ export const POST = requireTeacher(async (request: NextRequest, currentUser: any
     const body = await request.json();
     const validated = createCourseSchema.parse(body);
 
+    // force default status when teacher creates a course
+      // if (!validated.status) {
+      //   validated.status = "PUBLISHED";
+      // }
+
     // Create course
     const course = await Course.create({
       ...validated,
@@ -118,7 +122,7 @@ export const POST = requireTeacher(async (request: NextRequest, currentUser: any
     return ApiResponseBuilder.created(
       {
         ...course.toObject(),
-        _id: (course._id as Types.ObjectId).toString(),
+        _id: (course._id as any).toString(),
         teacherId: {
           ...(course.teacherId as any).toObject(),
           _id: (course.teacherId as any)._id.toString(),

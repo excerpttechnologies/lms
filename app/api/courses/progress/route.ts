@@ -6,7 +6,7 @@
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
 import Course from '@/models/Course';
-import Enrollment,{EnrollmentStatus} from '@/models/Enrollment';
+import Enrollment from '@/models/Enrollment';
 import { ApiResponseBuilder } from '@/lib/utils/api-response';
 import { handleApiError } from '@/lib/utils/error-handler';
 import { requireAuth } from '@/middleware/auth';
@@ -39,7 +39,7 @@ export const GET = requireAuth(async (
 
     return ApiResponseBuilder.success({
       ...enrollment,
-      _id: (enrollment._id as Types.ObjectId).toString(),
+      _id: enrollment._id.toString(),
       studentId: enrollment.studentId.toString(),
       courseId: enrollment.courseId.toString(),
     });
@@ -116,7 +116,7 @@ export const PUT = requireAuth(async (
       // Check if course completed
       if (enrollment.progressPercentage === 100 && !enrollment.completedAt) {
         enrollment.completedAt = new Date();
-        enrollment.status = EnrollmentStatus.COMPLETED;
+        enrollment.status = 'COMPLETED' as any;
       }
     }
 
@@ -124,7 +124,7 @@ export const PUT = requireAuth(async (
 
     return ApiResponseBuilder.success(
       {
-        _id: (enrollment._id as Types.ObjectId).toString(),
+        _id: (enrollment._id as any).toString(),
         progress: enrollment.progress,
         progressPercentage: enrollment.progressPercentage,
         status: enrollment.status,

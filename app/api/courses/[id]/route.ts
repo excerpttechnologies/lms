@@ -109,12 +109,11 @@ export const PUT = requireTeacher(async (
     return handleApiError(error);
   }
 });
-
 // DELETE /api/courses/:id - Delete course
 export const DELETE = requireTeacher(async (
   request: NextRequest,
   currentUser: any,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) => {
   try {
     await connectDB();

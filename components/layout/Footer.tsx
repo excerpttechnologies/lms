@@ -8,10 +8,10 @@ export default function Footer() {
   <div className="flex w-full flex-wrap items-center justify-between">
     <div className="flex items-center gap-2 text-xl font-bold text-base-content">
      
-      <span>FlyonUI</span>
+      <span>E-Learning</span>
     </div>
     <aside className="grid-flow-col items-center">
-      <p> ©2024 <a className="link link-hover font-medium" href="#">FlyonUI</a> </p>
+      <p> ©2025 <a className="link link-hover font-medium" href="#">E-Learning</a> </p>
     </aside>
     <div className="flex h-5 gap-4">
       <a href="#" className="link" aria-label="Github Link">

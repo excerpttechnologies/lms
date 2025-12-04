@@ -13,13 +13,18 @@ export class AppError extends Error {
   }
 }
 
-export function handleApiError(error: any) {
+export function handleApiError(error: unknown) {
   console.error('API Error:', error);
 
   // Zod validation errors
   if (error instanceof ZodError) {
+    // .issues is the correct array of ZodIssue
     const errors = error.issues.map((issue) => ({
-      field: issue.path.map(String).join('.'),
+      // handle empty path / numeric path segments
+      field:
+        issue.path && issue.path.length
+          ? issue.path.map((p) => String(p)).join('.')
+          : '(root)',
       message: issue.message,
     }));
     return ApiResponseBuilder.badRequest('Validation failed', errors);
@@ -30,32 +35,38 @@ export function handleApiError(error: any) {
     return ApiResponseBuilder.error(error.message, error.statusCode);
   }
 
+  // The following checks expect an object shape like Mongoose errors or JWT errors.
+  // Narrow `error` to any for those specific checks.
+  const errAny = error as any;
+
   // Mongoose validation errors
-  if (error.name === 'ValidationError') {
-    const errors = Object.keys(error.errors).map((key) => ({
+  if (errAny && errAny.name === 'ValidationError' && errAny.errors) {
+    const errors = Object.keys(errAny.errors).map((key) => ({
       field: key,
-      message: error.errors[key].message,
+      message: errAny.errors[key].message,
     }));
     return ApiResponseBuilder.badRequest('Validation failed', errors);
   }
 
   // Mongoose duplicate key error
-  if (error.code === 11000) {
-    const field = Object.keys(error.keyPattern)[0];
+  if (errAny && errAny.code === 11000) {
+    const field = errAny.keyPattern
+      ? Object.keys(errAny.keyPattern)[0]
+      : Object.keys(errAny.keyValue ?? {})[0] ?? 'field';
     return ApiResponseBuilder.badRequest(`${field} already exists`);
   }
 
   // Mongoose CastError
-  if (error.name === 'CastError') {
+  if (errAny && errAny.name === 'CastError') {
     return ApiResponseBuilder.badRequest('Invalid ID format');
   }
 
   // JWT errors
-  if (error.name === 'JsonWebTokenError') {
+  if (errAny && errAny.name === 'JsonWebTokenError') {
     return ApiResponseBuilder.unauthorized('Invalid token');
   }
 
-  if (error.name === 'TokenExpiredError') {
+  if (errAny && errAny.name === 'TokenExpiredError') {
     return ApiResponseBuilder.unauthorized('Token expired');
   }
 
@@ -63,7 +74,7 @@ export function handleApiError(error: any) {
   return ApiResponseBuilder.error(
     process.env.NODE_ENV === 'production'
       ? 'Internal server error'
-      : error.message || 'Internal server error',
+      : (errAny && errAny.message) || 'Internal server error',
     500
   );
 }

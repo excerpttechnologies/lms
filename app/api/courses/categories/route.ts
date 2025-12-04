@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const categoryCounts = await Course.aggregate([
       {
         $match: {
-          category: { $ne: null },
+          category: { $nin: [null, ''] },
           status: 'PUBLISHED',
         },
       },

@@ -55,7 +55,7 @@ export const POST = requireTeacher(async (
 
     return ApiResponseBuilder.created(
       {
-        _id: (course._id as Types.ObjectId).toString(),
+        _id: (course._id as any).toString(),
         modules: course.modules,
       },
       'Module added successfully'

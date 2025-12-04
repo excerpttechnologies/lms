@@ -4,7 +4,7 @@
 // ============================================
 import { NextRequest } from 'next/server';
 import connectDB from '@/lib/db/mongodb';
-import Submission,{SubmissionStatus} from '@/models/Submission';
+import Submission from '@/models/Submission';
 import Assignment from '@/models/Assignment';
 import Course from '@/models/Course';
 import User from '@/models/User';
@@ -68,7 +68,7 @@ export const PUT = requireTeacher(async (
     submission.feedback = validated.feedback;
     submission.gradedBy = new Types.ObjectId(currentUser.userId);
     submission.gradedAt = new Date();
-    submission.status = SubmissionStatus.GRADED;
+    submission.status = 'GRADED' as any;
 
     await submission.save();
 
@@ -81,7 +81,7 @@ export const PUT = requireTeacher(async (
     return ApiResponseBuilder.success(
       {
         ...submission.toObject(),
-        _id: (submission._id as Types.ObjectId).toString(),
+        _id: (submission._id as any).toString(),
         assignmentId: {
           ...(submission.assignmentId as any).toObject(),
           _id: (submission.assignmentId as any)._id.toString(),

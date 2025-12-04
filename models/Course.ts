@@ -95,7 +95,7 @@ const CourseSchema = new Schema<ICourse>(
     status: {
       type: String,
       enum: Object.values(CourseStatus),
-      default: CourseStatus.DRAFT,
+      default: CourseStatus.PUBLISHED,
     },
     price: {
       type: Number,
